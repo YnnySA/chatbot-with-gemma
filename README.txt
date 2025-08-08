@@ -14,7 +14,7 @@ Requisitos:
 - Modelo GGUF descargado localmente (ej. gemma-2-2b-it-Q5_K_M.gguf).
 
 Instalación:
-1. Clona o copia este proyecto en tu equipo.
+1. Clona o copia este proyecto en tu equipo, crea en la raiz del directorio del proyecto una carpeta models.
 2. Coloca el modelo GGUF en la carpeta `models/` o define la variable de entorno `LLAMA_GGUF_PATH`.
 link de descarga del modelo: https://huggingface.co/ironlanderl/gemma-2-2b-it-Q5_K_M-GGUF/resolve/main/gemma-2-2b-it-q5_k_m.gguf
 3. Instala las dependencias:
