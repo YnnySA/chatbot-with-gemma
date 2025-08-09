@@ -14,32 +14,48 @@ Requisitos:
 - Modelo GGUF descargado localmente (ej. gemma-2-2b-it-Q5_K_M.gguf).
 
 Instalación:
-1. Clona o copia este proyecto en tu equipo, crea en la raiz del directorio del proyecto una carpeta models.
-2. Coloca el modelo GGUF en la carpeta `models/` o define la variable de entorno `LLAMA_GGUF_PATH`.
-link de descarga del modelo: https://huggingface.co/ironlanderl/gemma-2-2b-it-Q5_K_M-GGUF/resolve/main/gemma-2-2b-it-q5_k_m.gguf
-3. Instala las dependencias:
-   pip install -r requirements.txt
-4. Ejecuta la aplicación:
-   streamlit run chatbot_gemma_st.py
+1. Clona o copia este proyecto en tu equipo.
+2. (Opcional pero recomendado) Crea un entorno virtual en la raíz del repositorio o en esta carpeta `chatbot_with_LlamaCpp/`:
+   - En la raíz: `python -m venv streamlit_venv`
+   - O en esta carpeta: `python -m venv streamlit_venv`
+3. Activa el entorno virtual y instala dependencias:
+   - Windows: `streamlit_venv\Scripts\python.exe -m pip install --upgrade pip wheel setuptools`
+   - Windows: `streamlit_venv\Scripts\python.exe -m pip install -r requirements.txt`
+4. Modelo GGUF:
+   - Opción A (por defecto): coloca el modelo en `chatbot_with_LlamaCpp/models/` con nombre `gemma-2-2b-it-Q5_K_M.gguf`.
+   - Opción B: define la variable de entorno `LLAMA_GGUF_PATH` con la ruta completa al `.gguf`.
+   - Descarga sugerida: `https://huggingface.co/ironlanderl/gemma-2-2b-it-Q5_K_M-GGUF/resolve/main/gemma-2-2b-it-q5_k_m.gguf`
+
+Ejecución (sin usar terminal):
+- Doble clic en `chatbot_with_LlamaCpp/launcher.pyw`.
+  - El lanzador detecta automáticamente un entorno virtual `streamlit_venv` en esta carpeta o en la carpeta padre. Si no existe, usará el Python del sistema.
+  - Si faltan dependencias, mostrará instrucciones para instalarlas.
+
+Ejecución (por terminal, alternativa):
+1. Abre una terminal en esta carpeta `chatbot_with_LlamaCpp/`.
+2. (Opcional) Activa tu entorno virtual.
+3. Ejecuta: `streamlit run chatbot_gemma_st.py`
 
 ## Archivos grandes y uso local
 
 Este proyecto utiliza modelos GGUF que no se incluyen en el repositorio por su tamaño. Para usar el chatbot localmente:
 
-1. Descarga el modelo `gemma-2-2b-it-Q5_K_M.gguf` y colócalo en la carpeta `models/`.
-2. El archivo está excluido del repositorio mediante `.gitignore` para facilitar la subida en entornos con conexión limitada.
+1. Descarga el modelo `gemma-2-2b-it-Q5_K_M.gguf` y colócalo en la carpeta `chatbot_with_LlamaCpp/models/`.
+2. Alternativamente, define `LLAMA_GGUF_PATH` apuntando a la ruta completa del modelo.
+3. El archivo del modelo está excluido del repositorio mediante `.gitignore`.
 
 
-En caso de que LlamaCpp te dé problemas sigue estas instrucciones para instalarlo:
-1. Asegúrate de tener instalado Visual Studio Tool para el manejo de los binarios precomplilados (o algo así, jjjj)
-2. En el entorno virtual de trabajo del proyecto ejecuta: 
-    ''python -m install --upgrade pip wheel setuptools''
-3. pip install "cmake>=3.27" --no-cache-dir
-4. pip install llama-cpp-python --no-cache-dir --verbose
+En caso de que LlamaCpp te dé problemas, prueba:
+1. Instala "Microsoft C++ Build Tools" (Visual Studio Build Tools) en Windows.
+2. En el entorno virtual ejecuta:
+   - `python -m pip install --upgrade pip wheel setuptools`
+   - `pip install "cmake>=3.27" --no-cache-dir`
+   - `pip install llama-cpp-python --no-cache-dir --verbose`
 
 Notas:
 - Puedes recargar el modelo desde la barra lateral.
-- Si usas una USB, asegúrate de que el modelo esté incluido en la carpeta `models/`.
+- Si usas una USB, incluye la carpeta `chatbot_with_LlamaCpp/models/` con el `.gguf`.
+- La app también permite establecer la ruta del modelo desde la barra lateral.
 
 
-Autor: Yenny Sánchez Aguilar (Proyecto educativo para entornos sin conexión)
+Autor: Yenny Sánchez Aguilar (Proyecto educativo para entornos sin conexión con gemma)
