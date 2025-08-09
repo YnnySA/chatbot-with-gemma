@@ -22,9 +22,10 @@ SYSTEM_PROMPT = (
     "con explicaciones breves y adaptadas a un nivel básico-intermedio.\n"
 )
 
+# Historial y construcción del prompt
 def formatear_historial(history):
     """
-    Convierte la lista de mensajes en el formato:
+    Convierte la lista de mensajes a un texto tipo chat con el formato:
     Usuario: ...
     Asistente: ...
     """
@@ -47,7 +48,7 @@ def construir_prompt(history, user_input):
 # Carga del modelo (cacheado)
 # -----------------------------------
 
-@st.cache_resource(show_spinner="Cargando modelo GGUF en memoria…")
+@st.cache_resource(show_spinner="Cargando modelo GGUF en memoria…")         #evita recargar el modelo en cada interacción. 
 def get_llm(model_path: str,
             n_ctx: int,
             n_threads: int,
@@ -68,15 +69,15 @@ def get_llm(model_path: str,
     # Inicializa con tu misma configuración base (ajustable desde la UI)
     return LlamaCpp(
         model_path=model_path,
-        n_ctx=n_ctx,
-        n_threads=n_threads,
-        n_batch=n_batch,
-        n_gpu_layers=n_gpu_layers,
-        f16_kv=f16_kv,
+        n_ctx=n_ctx,                #tamaño de contexto (memoria conversacional). 512–1024 es razonable en CPU de pocos recursos. A más grande, más RAM y más lento.    
+        n_threads=n_threads,        #número de hilos de CPU para la inferencia. 4 es razonable en CPU de pocos recursos. A más, más RAM y más lento.
+        n_batch=n_batch,            #número de tokens por lote. 64 es razonable en CPU de pocos recursos. A más, más RAM y más lento.
+        n_gpu_layers=n_gpu_layers,  #número de capas GPU para la inferencia. 0 es CPU. A más, más GPU y más rápido.
+        f16_kv=f16_kv,              #reduce RAM del caché KV usando 16 bits. En CPU de bajos recursos suele ayudar activarlo.
         verbose=False,
-        temperature=temperature,
-        top_p=top_p,
-        max_tokens=max_tokens,
+        temperature=temperature,     #temperatura de la respuesta. 0.0 es más determinista, 1.0 más aleatorio.
+        top_p=top_p,                #filtra el muestreo a los tokens más probables.(0.8–0.95)
+        max_tokens=max_tokens,      #máximo de tokens por respuesta. 256 es razonable en CPU de pocos recursos. A más, más RAM y más lento.
     )
 
 # -------------------------------
@@ -86,11 +87,12 @@ def get_llm(model_path: str,
 st.set_page_config(page_title="Chatbot educativo — GGUF local", page_icon="🎓", layout="centered")
 st.title("Chatbot educativo — GGUF local (Gemma 2B)")
 
-# Estado de sesión para historial y recarga
+# Esto inicializa variables en la sesión de Streamlit para mantener el historial del chat
+# y un contador para forzar la recarga del modelo si es necesario.
 if "history" not in st.session_state:
-    st.session_state.history = []  # [{"role": "user"/"assistant", "content": str}]
+    st.session_state.history = []  # Guarda la conversación como una lista de mensajes.
 if "reload_key" not in st.session_state:
-    st.session_state.reload_key = 0
+    st.session_state.reload_key = 0  # Permite recargar el modelo al cambiar este valor.
 
 # Barra lateral: configuración
 with st.sidebar:
@@ -127,6 +129,7 @@ with st.sidebar:
             
 
 # Carga del modelo (o muestra error claro)
+# Da mensajes claros si la ruta es incorrecta o si el backend falla. Muy útil para usuarios no técnicos.
 try:
     llm = get_llm(
         model_path=model_path,
